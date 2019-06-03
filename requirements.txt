@@ -1,0 +1,4 @@
+ardrone
+
+pytest
+pytest-codestyle
