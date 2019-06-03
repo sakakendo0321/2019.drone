@@ -1,0 +1,16 @@
+
+version: 2
+
+jobs:
+    build:
+        working_directory: ~
+        docker:
+            - image: circleci/python
+        steps:
+            - checkout
+            - run
+                name: pytest
+                command: |
+                    pip install -r requirements.txt
+                    pytest
+
