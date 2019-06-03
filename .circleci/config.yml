@@ -8,7 +8,7 @@ jobs:
             - image: circleci/python
         steps:
             - checkout
-            - run
+            - run:
                 name: pytest
                 command: |
                     pip install -r requirements.txt
