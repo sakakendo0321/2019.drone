@@ -1,3 +1,9 @@
 [submodule "python-ardrone"]
 	path = python-ardrone
 	url = https://github.com/fkmclane/python-ardrone
+[submodule "libardrone"]
+	path = libardrone
+	url = https://github.com/venthur/python-ardrone
+[submodule "ardrone-webflight"]
+	path = ardrone-webflight
+	url = https://github.com/eschnou/ardrone-webflight.git
