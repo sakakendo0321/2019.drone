@@ -1,4 +1,5 @@
-ardrone
+git+https://github.com/fkmclane/python-ardrone
+pyardrone
 
 pytest
 pytest-codestyle

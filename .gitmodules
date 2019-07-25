@@ -7,3 +7,6 @@
 [submodule "ardrone-webflight"]
 	path = ardrone-webflight
 	url = https://github.com/eschnou/ardrone-webflight.git
+[submodule "pyardrone"]
+	path = pyardrone
+	url = https://github.com/afq984/pyardrone
