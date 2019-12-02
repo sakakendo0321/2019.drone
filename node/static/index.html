@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+  </head>
+  <body>
+    <p>
+      hello 2019.droone
+    </p>
+    <script type="text/javascript">
+      console.log('js')
+      var socket = io.connect('http://localhost:8000');
+      socket.on('connect', console.log('connect'));
+      socket.on('data', function(data){console.log('data', data)});
+    </script>
+  </body>
+</html>
+

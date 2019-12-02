@@ -1,0 +1,11 @@
+{
+  "name": "2019.drone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "sakakendo",
+  "license": "MIT",
+  "dependencies": {
+    "ar-drone": "^0.3.3",
+    "socket.io": "^2.3.0"
+  }
+}
