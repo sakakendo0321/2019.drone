@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "ar-drone": "^0.3.3",
+    "express": "^4.17.1",
     "socket.io": "^2.3.0"
   }
 }

@@ -1,4 +1,5 @@
-git+https://github.com/fkmclane/python-ardrone
+matplotlib
+#git+https://github.com/fkmclane/python-ardrone
 pyardrone
 
 pytest

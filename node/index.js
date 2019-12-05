@@ -1,31 +1,39 @@
 const fs = require('fs');
-const http = require('http');
-const server = http.createServer();
 const os = require('os')
 const arDrone = require('ar-drone');
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+const ioServer = require('socket.io')(http);
+
 const drone = arDrone.createClient();
-drone.config('general:navdata_demo','FALSE')
+//drone.config('general:navdata_demo','FALSE')
 
 const HOSTNAME = os.hostname()
 const HOST = process.env.HOST || '192.168.20.1'
 const PORT = process.env.PORT | 8000
 
-const ioServer = require('socket.io').listen(server);
-server.listen(PORT)
 const ioClient = require('socket.io-client');
 const socketClient = ioClient.connect(HOST + PORT);
 
-ioServer.sockets.on('connection',function(socket){
-  console.log('connect')
+app.use(express.static('./static'))
 
+ioServer.on('connection',function(socket){
+  console.log('connect')
+  socket.emit('data', 'hello world');
   socket.on('data', (data)=>{
     console.log(data)
-    socket.emit('data', data)
+    socketClient.emit('data', data)
+  });
+
+  socket.on('disconnect', ()=>{
+    console.log('disconnect')
   });
 });
 
-socketClient.on('data',(data)=>{
-  console.log(data);
+
+http.listen(PORT, function(){
+  console.log('start listening port: ', PORT);
 });
 
 drone.on('navdata',(navdata)=>{
@@ -35,7 +43,7 @@ drone.on('navdata',(navdata)=>{
     navdata: navdata
   }
   console.log(data);
-  // socketClient.emit('data', data)
+  socketClient.emit('data', data)
 });
 
-console.log('start runnning')
+console.log("start runnning PORT: "+PORT)
