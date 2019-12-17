@@ -9,14 +9,17 @@ $ sudo apt install python3-tk
 
 drone=ARDrone()
 drone.navdata_ready.wait()
+# drone.send(at.CONFIG('general:navdata_demo', True))
 drone.send(at.CONFIG('general:navdata_demo', False))
-#drone.send(at.CONFIG('general:navdata_demo',True))
 
 data = {
     "phi": [],
     "psi": [],
     "theta": [],
 }
+
+#drone.takeoff()
+
 while True:
 #    print(drone.navdata.demo.theta, drone.navdata.demo.psi, drone.navdata.demo.psi)
     print(drone.navdata)

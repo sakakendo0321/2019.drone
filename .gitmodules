@@ -10,3 +10,9 @@
 [submodule "pyardrone"]
 	path = pyardrone
 	url = https://github.com/afq984/pyardrone
+[submodule "python2/libardrone"]
+	path = python2/libardrone
+	url = https://github.com/venthur/python-ardrone
+[submodule "python2/python-ardrone"]
+	path = python2/python-ardrone
+	url = https://github.com/venthur/python-ardrone
