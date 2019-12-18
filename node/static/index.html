@@ -3,17 +3,70 @@
   <head>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script> -->
     <script src="/socket.io/socket.io.js"></script> 
-    <!-- script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script> -->
+    <script src="/plotly-latest.min.js"></script> 
+    
+    <!-- 
+      cdn version
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> 
+      <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script> 
+    -->
   </head>
   <body>
     <p>
       hello 2019.drone
     </p>
+    <div id="myDiv" style="width:1200px; height:900px;"></div>
     <script type="text/javascript">
       var socket = io('http://localhost:8000');
+      Plotly.plot('myDiv', [{
+        y: [1, 2, 3],
+        mode: 'lines',
+        name: 'x',
+        line: {color: '#80CAF6'},
+      }, {
+        y: [2, 2, 2],
+        mode: 'lines',
+        name: 'y',
+        line: {color: '#DF56F1'},
+      }, {
+        y: [3, 2, 1],
+        mode: 'lines',
+        name: 'z',
+        line: {color: '#f1df56'},
+      },{
+        y: [1, 2, 3],
+        mode: 'lines',
+        name: 'phi',
+        line: {color: '#80CAF6'},
+      }, {
+        y: [2, 2, 2],
+        mode: 'lines',
+        name: 'psi',
+        line: {color: '#DF56F1'},
+      }, {
+        y: [3, 2, 1],
+        mode: 'lines',
+        name: 'theta',
+        line: {color: '#f1df56'},
+      }])
       socket.on('connect', function(){console.log('connect')});
       socket.on('event', function(event){console.log('event', data)});
-      socket.on('data', function(data){console.log('data', data)});
+      socket.on('data', 
+        function(data){
+          console.log('data', data.state)
+          if(data.state){
+            Plotly.extendTraces('myDiv', {
+              y: [
+                [data.state.x], 
+                [data.state.y], 
+                [data.state.z],
+                [data.state.phi],
+                [data.state.psi],
+                [data.state.theta]
+              ]
+            }, [0, 1, 2, 3, 4, 5]);
+          }
+        });
       socket.on('disconnect', function(){console.log('disconnect')});
     </script>
   </body>
