@@ -74,7 +74,6 @@ describe('matrix', function(){
                 [2, 4, 2],
                 [9, 8, 6],
             ],3 ,3);
-//            const mat = mat1.add(mat2)
             it('test add', function(){
                 const mat = mat1.add(mat2)
                 assert.equal(mat.col, 3)
@@ -116,7 +115,6 @@ describe('matrix', function(){
         });
     });
     describe('local to global', function(){
-//        describe('case 1', function(){
         it('case 1', function(){
             const euler = {
                 pitch: 30 * (Math.PI/180), //pitch
@@ -135,7 +133,6 @@ describe('matrix', function(){
     })
     describe('global to local', function(){
         it('case 1', function(){
-//        describe('case 1', function(){
             const euler = {
                 pitch: 30 * (Math.PI/180), //pitch
                 yaw: 0,
@@ -147,7 +144,6 @@ describe('matrix', function(){
                 [1],
             ], 1, 3);
             local = global2Local(euler, pos).round();
-//            console.log(local);
             assert.deepEqual(local.mat, [[2], [0], [0]])
         });
     })
