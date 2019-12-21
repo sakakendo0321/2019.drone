@@ -57,12 +57,12 @@
           if(data.state){
             Plotly.extendTraces('myDiv', {
               y: [
-                [data.state.x], 
-                [data.state.y], 
-                [data.state.z],
-                [data.state.phi],
-                [data.state.psi],
-                [data.state.theta]
+                [data.state.global[0]], 
+                [data.state.global[1]], 
+                [data.state.global[2]],
+                [data.state.euler.phi],
+                [data.state.euler.psi],
+                [data.state.euler.theta]
               ]
             }, [0, 1, 2, 3, 4, 5]);
           }
