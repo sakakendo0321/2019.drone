@@ -36,17 +36,32 @@
       },{
         y: [1, 2, 3],
         mode: 'lines',
-        name: 'phi',
+        name: 'pitch',
         line: {color: '#80CAF6'},
       }, {
         y: [2, 2, 2],
         mode: 'lines',
-        name: 'psi',
+        name: 'yaw',
         line: {color: '#DF56F1'},
       }, {
         y: [3, 2, 1],
         mode: 'lines',
-        name: 'theta',
+        name: 'roll',
+        line: {color: '#f1df56'},
+      },{
+        y: [1, 2, 3],
+        mode: 'lines',
+        name: 'dx',
+        line: {color: '#80CAF6'},
+      }, {
+        y: [2, 2, 2],
+        mode: 'lines',
+        name: 'dy',
+        line: {color: '#DF56F1'},
+      }, {
+        y: [3, 2, 1],
+        mode: 'lines',
+        name: 'dz',
         line: {color: '#f1df56'},
       }])
       socket.on('connect', function(){console.log('connect')});
@@ -57,17 +72,29 @@
           if(data.state){
             Plotly.extendTraces('myDiv', {
               y: [
-                [data.state.global[0]], 
-                [data.state.global[1]], 
-                [data.state.global[2]],
-                [data.state.euler.phi],
-                [data.state.euler.psi],
-                [data.state.euler.theta]
+                [data.state.pos[0]], 
+                [data.state.pos[1]], 
+                [data.state.pos[2]],
+                [data.state.euler.pitch],
+                [data.state.euler.yaw],
+                [data.state.euler.roll],
+                [data.state.displacement[0]],
+                [data.state.displacement[1]],
+                [data.state.displacement[2]]
               ]
-            }, [0, 1, 2, 3, 4, 5]);
+            }, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
           }
         });
       socket.on('disconnect', function(){console.log('disconnect')});
+  function fetchState(){
+    console.log('fetch state')
+    socket.emit('control', {
+      'index': 0,
+      'order':'getState'
+    })
+    setTimeout(fetchState,1000);
+  }
+  fetchState();
     </script>
   </body>
 </html>

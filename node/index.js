@@ -11,7 +11,8 @@ const drone = arDrone.createClient();
 drone.config('general:navdata_demo','FALSE')
 drone.takeoff();
 
-const HOST_INDEX = process.env.HOST_INDEX || 0;
+const HOST_INDEX = process.env.HOST_INDEX ?  process.env.HOST_INDEX : 0;
+console.log(HOST_INDEX)
 const HOST = process.env.HOST || '192.168.20.1'
 const PORT = process.env.PORT | 8000
 
@@ -19,9 +20,11 @@ const ioClient = require('socket.io-client');
 const socketClient = ioClient.connect(HOST + PORT);
 
 let lastTime = null;
+let pos = new Matrix([[0], [0], [0]], 1, 3);
 let state={
-  hostname: HOST_INDEX,
+  index: HOST_INDEX,
   pos:[],
+  displacement:[],
   euler: {},
   target: {
     x: null,
@@ -32,9 +35,13 @@ let state={
 drone.on('navdata',(navdata)=>{
   let currentTime = Date.now();
   if(typeof navdata.demo !== 'undefined'){
+    /* navdata
+     * https://github.com/felixge/node-ar-drone/blob/53e66221e6d7fc48fb2ccf8d9f11275e8d1e1092/lib/navdata/parseNavdata.js
+     * Velocity: [mm/s]
+     * Degreess [mdeg]
+     */
     const {frontBackDegrees, leftRightDegrees,clockwiseDegrees,
         xVelocity, yVelocity,zVelocity} = navdata.demo;
-    // calcurate global drone's position
     euler = {
       pitch: frontBackDegrees * (Math.PI/180),
       roll: leftRightDegrees * (Math.PI/180),
@@ -43,26 +50,26 @@ drone.on('navdata',(navdata)=>{
     if(lastTime){
       const dt = ((currentTime - lastTime) /1000);
       const displacement = new Matrix([
-        [xVelocity * dt], 
-        [yVelocity * dt],
-        [zVelocity * dt],
+        [xVelocity / 1000 * dt], 
+        [yVelocity / 1000 * dt],
+        [zVelocity / 1000 * dt],
       ], 1, 3);
       let diff = local2Global(euler, displacement);
       console.log('displacement',displacement.mat, 'diff', diff.mat);
       pos = pos.add(diff);
-    }
-    state = {
-      pos: [
+      state.displacement = [
+        displacement.mat[0][0],
+        displacement.mat[1][0],
+        displacement.mat[2][0],
+      ];
+      state.pos = [
         pos.mat[0][0],
         pos.mat[1][0],
         pos.mat[2][0],
-      ],
-      euler,
+      ];
+      state.euler = euler;
+      console.log('target, pos',state.target, state.pos);
     }
-    console.log(data);
-
-    // control drone
-    console.log('target, pos',state.target, state.pos);
   }else{
     console.error('navdata is undefined');
   }
@@ -72,20 +79,9 @@ drone.on('navdata',(navdata)=>{
 ioServer.on('connection',function(socket){
   console.log('connect')
   socket.emit('data', 'hello world');
-/*  socket.on('data', (data)=>{
-    console.log(data)
-
-    while(true){
-      setTimeout(function(){
-        console.log('socket emit', data);
-        socket.emit('data', data)
-        socketClient.emit('data', data)
-      }, 10)
-    }
-  });
-  */
   socket.on('control', (data)=>{
-    console.log('data', data);
+    console.log('contorl data: ', data);
+    console.log(data.index, HOST_INDEX, state.index)
     if(data.index === HOST_INDEX){
       if(data.order === 'land') drone.land();
       else if(data.order === 'takeof') drone.takeoff();
@@ -95,7 +91,12 @@ ioServer.on('connection',function(socket){
           y: data.y
         }
       } 
-      else if(data.order === 'getState') socket.emit('data', state);
+      else if(data.order === 'getState'){
+        console.log('emit state', state)
+        socket.emit('data', {
+          state
+        });
+      } 
     }else{
       socketClient.emit('control', data);
     }
