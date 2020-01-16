@@ -41,12 +41,14 @@ drone.on('navdata',(navdata)=>{
      * Degreess [mdeg]
      */
     const {frontBackDegrees, leftRightDegrees,clockwiseDegrees,
-        xVelocity, yVelocity,zVelocity} = navdata.demo;
+        xVelocity, yVelocity,zVelocity,
+        batteryPercentage} = navdata.demo;
     euler = {
       pitch: frontBackDegrees * (Math.PI/180),
       roll: leftRightDegrees * (Math.PI/180),
       yaw: clockwiseDegrees * (Math.PI/180)
     }
+//    console.log(navdata);
     if(lastTime){
       const dt = ((currentTime - lastTime) /1000);
       const displacement = new Matrix([
@@ -55,20 +57,26 @@ drone.on('navdata',(navdata)=>{
         [zVelocity / 1000 * dt],
       ], 1, 3);
       let diff = local2Global(euler, displacement);
-      console.log('displacement',displacement.mat, 'diff', diff.mat);
+//      console.log('displacement',displacement.mat, 'diff', diff.mat);
       pos = pos.add(diff);
+//      console.log('pos diff',pos,diff);
       state.displacement = [
         displacement.mat[0][0],
         displacement.mat[1][0],
         displacement.mat[2][0],
       ];
+      state.diff = [
+          diff.mat[0][0],
+          diff.mat[1][0],
+          diff.mat[2][0],
+      ]
       state.pos = [
         pos.mat[0][0],
         pos.mat[1][0],
         pos.mat[2][0],
       ];
       state.euler = euler;
-      console.log('target, pos',state.target, state.pos);
+//      console.log('battery, target, pos, velocity', batteryPercentage,state.target, state.pos, state.displacement);
     }
   }else{
     console.error('navdata is undefined');

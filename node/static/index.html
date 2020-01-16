@@ -15,74 +15,142 @@
     <p>
       hello 2019.drone
     </p>
-    <div id="myDiv" style="width:1200px; height:900px;"></div>
+    <h1>euler angle</h1>
+    <div id="euler" style="width:1200px; height:600px;"></div>
+    <h1>velocity </h1>
+    <div id="velocity" style="width:1200px; height:600px;"></div>
+    <h1>diff</h1>
+    <div id="diff" style="width:1200px; height:600px;"></div>
+    <h1>position</h1>
+    <div id="pos" style="width:1200px; height:600px;"></div>
+    <h1>3d pos</h1>
+    <div id="3d-pos" style="width:1200px; height:600px;"></div>
     <script type="text/javascript">
       var socket = io('http://localhost:8000');
-      Plotly.plot('myDiv', [{
-        y: [1, 2, 3],
-        mode: 'lines',
-        name: 'x',
-        line: {color: '#80CAF6'},
-      }, {
-        y: [2, 2, 2],
-        mode: 'lines',
-        name: 'y',
-        line: {color: '#DF56F1'},
-      }, {
-        y: [3, 2, 1],
-        mode: 'lines',
-        name: 'z',
-        line: {color: '#f1df56'},
-      },{
-        y: [1, 2, 3],
+      Plotly.plot('euler', [{
+        y: [],
         mode: 'lines',
         name: 'pitch',
         line: {color: '#80CAF6'},
       }, {
-        y: [2, 2, 2],
+        y: [],
         mode: 'lines',
         name: 'yaw',
         line: {color: '#DF56F1'},
       }, {
-        y: [3, 2, 1],
+        y: [],
         mode: 'lines',
         name: 'roll',
         line: {color: '#f1df56'},
-      },{
-        y: [1, 2, 3],
+      }]);
+
+      Plotly.plot('velocity', [{
+        y: [],
         mode: 'lines',
         name: 'dx',
         line: {color: '#80CAF6'},
       }, {
-        y: [2, 2, 2],
+        y: [],
         mode: 'lines',
         name: 'dy',
         line: {color: '#DF56F1'},
       }, {
-        y: [3, 2, 1],
+        y: [],
         mode: 'lines',
         name: 'dz',
         line: {color: '#f1df56'},
       }])
+
+      Plotly.plot('diff', [{
+        y: [],
+        mode: 'lines',
+        name: 'x',
+        line: {color: '#80CAF6'},
+      }, {
+        y: [],
+        mode: 'lines',
+        name: 'y',
+        line: {color: '#DF56F1'},
+      }, {
+        y: [],
+        mode: 'lines',
+        name: 'z',
+        line: {color: '#f1df56'},
+      }])
+
+      Plotly.plot('pos', [{
+        y: [],
+        mode: 'lines',
+        name: 'x',
+        line: {color: '#80CAF6'},
+      }, {
+        y: [],
+        mode: 'lines',
+        name: 'y',
+        line: {color: '#DF56F1'},
+      }, {
+        y: [],
+        mode: 'lines',
+        name: 'z',
+        line: {color: '#f1df56'},
+      }])
+
+      Plotly.plot('3d-pos', [{
+        type: 'scatter3d',
+        mode: 'lines',
+        x:0, 
+        y:0,
+        z:0,
+        opacity: 1,
+        line: {
+          width: 6,
+          color: c,
+          reversescale: false
+        }
+      }], { 
+        height: 640,
+      });
+
       socket.on('connect', function(){console.log('connect')});
       socket.on('event', function(event){console.log('event', data)});
       socket.on('data', 
         function(data){
           console.log('data', data.state)
           if(data.state){
-            Plotly.extendTraces('myDiv', {
+            Plotly.extendTraces('euler', {
               y: [
-                [data.state.pos[0]], 
-                [data.state.pos[1]], 
-                [data.state.pos[2]],
                 [data.state.euler.pitch],
                 [data.state.euler.yaw],
                 [data.state.euler.roll],
+              ]
+            }, [0, 1, 2]);
+            Plotly.extendTraces('velocity',{
+              y:[
                 [data.state.displacement[0]],
                 [data.state.displacement[1]],
                 [data.state.displacement[2]]
               ]
-            }, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+            }, [0, 1, 2])
+            Plotly.extendTraces('diff',{
+              y:[
+                [data.state.diff[0]],
+                [data.state.diff[1]],
+                [data.state.diff[2]]
+              ]
+            }, [0, 1, 2])
+            Plotly.extendTraces('pos', {
+              y: [
+                [data.state.pos[0]], 
+                [data.state.pos[1]], 
+                [data.state.pos[2]],
+              ]
+            }, [0, 1, 2]);
+            Plotly.extendTraces('3d-pos', {
+              x: data.state.pos[0],
+              y: data.state.pos[1],
+              z: data.state.pos[2]
+            })
+
           }
         });
       socket.on('disconnect', function(){console.log('disconnect')});
@@ -92,7 +160,7 @@
       'index': 0,
       'order':'getState'
     })
-    setTimeout(fetchState,1000);
+    setTimeout(fetchState,1);
   }
   fetchState();
     </script>

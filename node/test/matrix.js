@@ -130,6 +130,36 @@ describe('matrix', function(){
             global = local2Global(euler, displacement).round();
             assert.deepEqual(global.mat, [[1.73], [0], [1]]);
         })
+        it('case 2', function(){
+            const euler = {
+                pitch: 45 * (Math.PI/180),
+                yaw: 45 * (Math.PI/180),
+                roll: 0
+            }
+            displacement = new Matrix([
+                [1/2], 
+                [1/2],
+                [-1/Math.sqrt(2)],
+            ], 1, 3);
+
+            global = local2Global(euler, displacement).round();
+            assert.deepEqual(global.mat, [[1], [0], [0]]);
+        })
+        it('case 3', function(){
+            const euler = {
+                pitch: 90 * (Math.PI/180),
+                yaw: 90 * (Math.PI/180),
+                roll: 90 * (Math.PI/180),
+            }
+            displacement = new Matrix([
+                [1], 
+                [1],
+                [-1],
+            ], 1, 3);
+
+            global = local2Global(euler, displacement).round();
+            assert.deepEqual(global.mat, [[1], [1], [1]]);
+        })
     })
     describe('global to local', function(){
         it('case 1', function(){
@@ -146,5 +176,34 @@ describe('matrix', function(){
             local = global2Local(euler, pos).round();
             assert.deepEqual(local.mat, [[2], [0], [0]])
         });
+	    it('case 2', function(){
+		    const euler = {
+                pitch: 45 * (Math.PI/180),
+                yaw: 45 * (Math.PI/180), 
+                roll: 0
+            }
+            displacement = new Matrix([
+                [1], 
+                [0],
+                [0],
+            ], 1, 3);
+            local = global2Local(euler, displacement).round();
+            assert.deepEqual(local.mat, [[0.5], [0.5], [-0.71]]);
+        })
+	    it('case 3', function(){
+		    const euler = {
+                pitch: 90* (Math.PI/180),
+                yaw: 90 * (Math.PI/180), 
+                roll: 90 * (Math.PI/180)
+            }
+            displacement = new Matrix([
+                [1], 
+                [1],
+                [1],
+            ], 1, 3);
+            local = global2Local(euler, displacement).round();
+            assert.deepEqual(local.mat, [[1], [1], [-1]]);
+        })
+
     })
 });
