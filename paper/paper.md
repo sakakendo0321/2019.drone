@@ -512,7 +512,7 @@ $$
     vyTraj: 0,
     firmwareStatus: 0
   },
-
+}
 ```
       
 
