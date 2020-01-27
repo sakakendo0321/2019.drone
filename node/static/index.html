@@ -150,7 +150,6 @@
               y: data.state.pos[1],
               z: data.state.pos[2]
             })
-
           }
         });
       socket.on('disconnect', function(){console.log('disconnect')});
@@ -159,9 +158,16 @@
     socket.emit('control', {
       'index': 0,
       'order':'getState'
-    })
+    });
     setTimeout(fetchState,1);
   }
+
+  function startTracking(){
+    socket.emit('control',{
+      order: 'tracking'
+    });
+  }
+
   fetchState();
     </script>
   </body>
