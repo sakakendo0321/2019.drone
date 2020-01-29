@@ -38,7 +38,19 @@ paginate: true
 ![w:1200](architecture-lr.png)
 
 
+---
+## 研究概要
+#### センサデータ
+```
+var arDrone = require(‘ar-drone’);
 
+var client = arDrone.createClient();
+
+client.on(‘navdata’, (navdata)=>{
+    console.log(navdata);
+    // ここでnavdataを用いてドローンの初期位置からの変位を計算する.
+}
+```
 
 
 ---
