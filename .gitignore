@@ -218,3 +218,4 @@ dist
 # TernJS port file
 .tern-port
 *.pdf
+!presentation.pdf
