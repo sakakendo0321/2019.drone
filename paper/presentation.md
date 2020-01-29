@@ -37,9 +37,24 @@ paginate: true
 #### マルチホップ通信
 ![w:1200](architecture-lr.png)
 
+---
+## 研究概要
+#### センサデータ
 
+---
+## 研究概要
+#### デッドレコニング
+微小時間: $dt$
+速度: $vx, vy, vz$
+回転行列 : $R_X, R_y,  R_z$
+グローバル座標での移動量: $p$
 
+$
+p= (R_z \cdot R_y \cdot R_x)^{-1} \cdot \begin{bmatrix} vx\cdot dt \\ vy\cdot dt \\ vz\cdot dt  \end{bmatrix}$
 
+---
+## 研究概要
+#### センサデータ
 
 ---
 ## 実験結果
