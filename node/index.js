@@ -12,13 +12,13 @@ const udpDrone = arDrone.createUdpControl();
 drone.config('general:navdata_demo','FALSE')
 drone.takeoff();
 
-const HOST_INDEX = process.env.HOST_INDEX ?  process.env.HOST_INDEX : 0;
+const HOST_INDEX = process.env.HOST_INDEX ?  parseInt(process.env.HOST_INDEX) : 0;
 console.log(HOST_INDEX)
 const HOST = process.env.HOST || '192.168.20.1'
 const PORT = process.env.PORT | 8000
 
 const ioClient = require('socket.io-client');
-const socketClient = ioClient.connect(HOST + PORT);
+const socketClient = ioClient.connect(`http://${HOST}:{PORT}`);
 
 let lastTime = null;
 let pos = new Matrix([[0], [0], [0]], 1, 3);
@@ -93,16 +93,14 @@ ioServer.on('connection',function(socket){
   socket.emit('data', 'hello world');
   socket.on('control', (data)=>{
     // transmit data and instrucion to frontwards
-    console.log('contorl data: ', data);
+//    console.log('contorl data: ', data);
     console.log(data.index, HOST_INDEX, state.index)
     if(data.index === HOST_INDEX){
       if(data.order === 'land') drone.land();
       else if(data.order === 'takeof') drone.takeoff();
       else if(data.order === 'getState'){
         console.log('emit state', state)
-        socket.emit('data', {
-          state
-        });
+        socket.emit('data', state);
       }
     }else{
       socketClient.emit('control', data);
@@ -126,6 +124,21 @@ ioServer.on('connection',function(socket){
   });
 });
 
+
+socketClient.on('connect', ()=>{
+  console.log('succcess to connect to behavior server');
+})
+
+socketClient.on('data', ()=>{
+  console.log('get data from socketClient', data);
+  if(!data.pos) return;
+  state.target = {
+    x: data.pos[0],
+    y: data.pos[1],
+    z: data.pos[2],
+  };
+})
+
 http.listen(PORT, function(){
   console.log('start listening port: ', PORT);
 });
@@ -136,6 +149,11 @@ function main(){
   if(HOST_INDEX === 0) return;
   setTimeout(()=>{
     console.log('state, target',state.pos, state.target);
+    socketClient.emit('control', {
+      index: 0,
+      order: 'getState',
+    });
+
     if(state.target && state.pos){
       let xdiff =  state.target.x - state.pos[0],
         ydiff = state.target.y - state.pos[1] ;

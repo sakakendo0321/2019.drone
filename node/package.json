@@ -12,6 +12,6 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "node index.js"
+    "start": "HOST_INDEX=0 node index.js"
   }
 }
